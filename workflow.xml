@@ -1,0 +1,71 @@
+<workflow-app name="Project2_TeamNarwhals" xmlns="uri:oozie:workflow:0.4">
+	<start to="import-to-hive"/>
+
+	<action name="import-to-hive">
+		<sqoop xmlns="uri:oozie:sqoop-action:0.2">
+			<job-tracker>${job_tracker}</job-tracker>
+			<name-node>${name_node}</name-node>
+			<command>import --connect jdbc:mysql://project2database.cwyz2wunuyth.us-east-2.rds.amazonaws.com/project2 --username root --password asdfghjkl1 --table fish_catch --hive-import -m 1</command>
+		</sqoop>
+		<ok to="script-1"/>
+		<error to="sqoop-error"/>
+	</action>
+
+	<action name="script-1">
+        	<hive xmlns="uri:oozie:hive-action:0.4">
+            		<job-tracker>${job_tracker}</job-tracker>
+            		<name-node>${name_node}</name-node>
+            		<configuration>
+                		<property>
+                    			<name>hive.metastore.uris</name>
+                    			<value>thrift://localhost:xxxx</value>
+                		</property>
+            		</configuration>
+            		<script>${scripts_location}/narwhal1.sql</script>
+		</hive>
+		<ok to="script-2"/>
+		<error to="sql-error"/>
+	</action>
+
+	<action name="script-2">
+		<hive xmlns="uri:oozie:hive-action:0.4">
+			<job-tracker>${job_tracker}</job-tracker>
+			<name-node>${name_node}</name-node>
+			<configuration>
+				<property>
+					<name>hive.metastore.uris</name>
+					<value>thrift://localhost:xxxx</value>
+				</property>
+			</configuration>
+			<script>${scripts_location}/narwhal2.sql</script>
+		</hive>
+		<ok to="script-3"/>
+		<error to="sql-error"/>
+	</action>
+
+	<action name="script-3">
+		<hive xmlns="uri:oozie:hive-action:0.4">
+			<job-tracker>${job_tracker}</job-tracker>
+			<name-node>${name_node}</name-node>
+			<configuration>
+				<property>
+					<name>hive.metastore.uris</name>
+					<value>thrift://localhost:xxxx</value>
+				</property>
+			</configuration>
+			<script>${scripts_location}/narwhal3.sql</script>
+		</hive>
+		<ok to="end"/>
+		<error to="sql-error"/>
+	</action>
+
+	<kill name="sqoop-error">
+		<message>An error occured during Sqoop and terminated.</message>
+	</kill>
+
+	<kill name="sql-error">
+		<message>An error occured during Hive and terminated.</message>
+	</kill>
+
+	<end name="end"/>
+</workflow-app>
