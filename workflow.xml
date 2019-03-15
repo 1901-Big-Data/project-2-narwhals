@@ -18,7 +18,7 @@
             		<configuration>
                 		<property>
                     			<name>hive.metastore.uris</name>
-                    			<value>thrift://localhost:xxxx</value>
+                    			<value>thrift://localhost:8888</value>
                 		</property>
             		</configuration>
             		<script>${scripts_location}/narwhal1.sql</script>
@@ -34,7 +34,7 @@
 			<configuration>
 				<property>
 					<name>hive.metastore.uris</name>
-					<value>thrift://localhost:xxxx</value>
+					<value>thrift://localhost:8888</value>
 				</property>
 			</configuration>
 			<script>${scripts_location}/narwhal2.sql</script>
@@ -50,7 +50,7 @@
 			<configuration>
 				<property>
 					<name>hive.metastore.uris</name>
-					<value>thrift://localhost:xxxx</value>
+					<value>thrift://localhost:8888</value>
 				</property>
 			</configuration>
 			<script>${scripts_location}/narwhal3.sql</script>
