@@ -5,7 +5,7 @@
 		<sqoop xmlns="uri:oozie:sqoop-action:0.2">
 			<job-tracker>${job_tracker}</job-tracker>
 			<name-node>${name_node}</name-node>
-			<command>import --connect jdbc:mysql://project2database.cwyz2wunuyth.us-east-2.rds.amazonaws.com/project2 --username root --password asdfghjkl1 --table fish_catch --hive-import -m 1</command>
+			<command>import --connect jdbc:mysql://project2database.cwyz2wunuyth.us-east-2.rds.amazonaws.com:3306/project2 --username root --password asdfghjkl1 --table fish_catch --hive-import -m 1</command>
 		</sqoop>
 		<ok to="script-1"/>
 		<error to="sqoop-error"/>
