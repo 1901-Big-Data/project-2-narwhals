@@ -1,11 +1,29 @@
 <workflow-app name="Project2_TeamNarwhals" xmlns="uri:oozie:workflow:0.4">
-	<start to="import-to-hive"/>
+	<start to="create-table"/>
+
+	<action name="create-table">
+                <hive xmlns="uri:oozie:hive-action:0.4">
+                        <job-tracker>${job_tracker}</job-tracker>
+                        <name-node>${name_node}</name-node>
+                        <configuration>
+                                <property>
+                                        <name>hive.metastore.uris</name>
+                                        <value>thrift://localhost:9083</value>
+                                </property>
+                        </configuration>
+                        <script>${scripts_location}/create.sql</script>
+                </hive>
+                <ok to="import-to-hive"/>
+                <error to="sql-error"/>
+        </action>
+
 
 	<action name="import-to-hive">
 		<sqoop xmlns="uri:oozie:sqoop-action:0.2">
 			<job-tracker>${job_tracker}</job-tracker>
 			<name-node>${name_node}</name-node>
-			<command>import --connect jdbc:mysql://project2database.cwyz2wunuyth.us-east-2.rds.amazonaws.com:3306/project2 --username root --password asdfghjkl1 --table fish_catch --hive-import -m 1</command>
+			<job-xml>hive-site.xml</job-xml>
+			<command>import --connect jdbc:mysql://project2database.cwyz2wunuyth.us-east-2.rds.amazonaws.com:3306/project2 --username root --password asdfghjkl1 --table fish_catch --target-dir ${name_node}/user/cloudera/project2/sqoop_import --hive-import --hive-table default.fish_catch -m 1</command>
 		</sqoop>
 		<ok to="script-1"/>
 		<error to="sqoop-error"/>
@@ -18,7 +36,7 @@
             		<configuration>
                 		<property>
                     			<name>hive.metastore.uris</name>
-                    			<value>thrift://localhost:8888</value>
+                    			<value>thrift://localhost:9083</value>
                 		</property>
             		</configuration>
             		<script>${scripts_location}/narwhal1.sql</script>
@@ -34,7 +52,7 @@
 			<configuration>
 				<property>
 					<name>hive.metastore.uris</name>
-					<value>thrift://localhost:8888</value>
+					<value>thrift://localhost:9083</value>
 				</property>
 			</configuration>
 			<script>${scripts_location}/narwhal2.sql</script>
@@ -50,7 +68,7 @@
 			<configuration>
 				<property>
 					<name>hive.metastore.uris</name>
-					<value>thrift://localhost:8888</value>
+					<value>thrift://localhost:9083</value>
 				</property>
 			</configuration>
 			<script>${scripts_location}/narwhal3.sql</script>
